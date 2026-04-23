@@ -39,7 +39,7 @@ def main(directory):
         if 'node_modules' in root or '.next' in root:
             continue
         for file in files:
-            if file.endswith(('.tsx', '.jsx')):
+            if file.endswith(('.tsx', '.jsx', '.html')):
                 path = os.path.join(root, file)
                 file_issues = audit_file(path)
                 if file_issues:
