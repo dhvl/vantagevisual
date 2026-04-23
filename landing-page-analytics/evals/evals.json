@@ -1,0 +1,61 @@
+{
+    "skill_name": "landing-page-analytics",
+    "evals": [
+        {
+            "id": 1,
+            "prompt": "Audit this portfolio landing page for a freelance consultant. Ensure the headline is clear and the CTA is prominent. Repository or URL not provided, generic analysis based on design principles is acceptable.",
+            "expected_output": "A report highlighting messaging clarity, CTA placement, and trust signals.",
+            "files": [],
+            "assertions": [
+                {
+                    "text": "Report identifies if the headline is benefit-driven",
+                    "type": "content"
+                },
+                {
+                    "text": "Report checks for CTA presence in the hero section",
+                    "type": "content"
+                },
+                {
+                    "text": "Report mentions social proof or trust signals",
+                    "type": "content"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "prompt": "Check if this landing page follows CRO best practices for a SaaS startup. Focus on above-the-fold content and friction points. Provide a prioritized list of changes.",
+            "expected_output": "Prioritized recommendations focusing on hero section and reduced form friction.",
+            "files": [],
+            "assertions": [
+                {
+                    "text": "Report provides a prioritized list of recommendations",
+                    "type": "content"
+                },
+                {
+                    "text": "Report addresses above-the-fold content specifically",
+                    "type": "content"
+                },
+                {
+                    "text": "Report identifies friction points in forms",
+                    "type": "content"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "prompt": "I want to audit a landing page for my new startup.",
+            "expected_output": "The agent should ask for a URL or design description before proceeding.",
+            "files": [],
+            "assertions": [
+                {
+                    "text": "Agent asks for a URL or screenshot",
+                    "type": "content"
+                },
+                {
+                    "text": "Agent does NOT attempt a generic audit without data",
+                    "type": "negative"
+                }
+            ]
+        }
+    ]
+}

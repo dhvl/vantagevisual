@@ -1,0 +1,26 @@
+{
+  "skill_name": "seo-expert",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "metadata-audit-and-fix",
+      "prompt": "Audit the current project for SEO gaps and implement a comprehensive Metadata API configuration in the root layout. Include title templates, Open Graph tags, and a default description.",
+      "expected_output": "The user should see an SEO Audit report followed by a code update to layout.tsx implementing the Next.js Metadata API.",
+      "files": ["app/layout.tsx"]
+    },
+    {
+      "id": 2,
+      "eval_name": "generate-sitemap-and-robots",
+      "prompt": "Automate the generation of a dynamic sitemap and robots.txt for this Vercel project using file-based conventions. Ensure the sitemap excludes the /admin path.",
+      "expected_output": "Creation of 'app/sitemap.ts' and 'app/robots.ts' with appropriate logic to exclude sensitive paths.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "eval_name": "structured-data-injection",
+      "prompt": "Implement JSON-LD structured data for an 'Organization' schema on the homepage. Include the logo, social profiles, and contact information.",
+      "expected_output": "Injection of a <script type='application/ld+json'> tag into the homepage or root layout with valid schema details.",
+      "files": ["app/page.tsx", "app/layout.tsx"]
+    }
+  ]
+}
