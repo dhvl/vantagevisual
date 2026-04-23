@@ -2782,26 +2782,26 @@ footer{background:var(--ink);padding:48px var(--pad-x) 32px;}
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Your Name *</label>
-          <input class="form-input" type="text" placeholder="Full name">
+          <input id="inquiry-name" class="form-input" type="text" placeholder="Full name">
         </div>
         <div class="form-group">
           <label class="form-label">Company / Organisation</label>
-          <input class="form-input" type="text" placeholder="Company name">
+          <input id="inquiry-company" class="form-input" type="text" placeholder="Company name">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Email Address *</label>
-          <input class="form-input" type="email" placeholder="your@email.com">
+          <input id="inquiry-email" class="form-input" type="email" placeholder="your@email.com">
         </div>
         <div class="form-group">
           <label class="form-label">Phone Number</label>
-          <input class="form-input" type="tel" placeholder="+44">
+          <input id="inquiry-phone" class="form-input" type="tel" placeholder="+44">
         </div>
       </div>
       <div class="form-group">
         <label class="form-label">Service Required</label>
-        <select class="form-select">
+        <select id="inquiry-service" class="form-select">
           <option value="">Select a service...</option>
           <option>Stage & Backdrop Graphics</option>
           <option>Exhibition & Trade Show</option>
@@ -2815,16 +2815,16 @@ footer{background:var(--ink);padding:48px var(--pad-x) 32px;}
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Event Date</label>
-          <input class="form-input" type="date">
+          <input id="inquiry-date" class="form-input" type="date">
         </div>
         <div class="form-group">
           <label class="form-label">Event Location / Venue</label>
-          <input class="form-input" type="text" placeholder="Venue name or area">
+          <input id="inquiry-location" class="form-input" type="text" placeholder="Venue name or area">
         </div>
       </div>
       <div class="form-group">
         <label class="form-label">Tell Us About Your Project *</label>
-        <textarea class="form-textarea" placeholder="Describe your requirements — the more detail you can share, the better we can help. Include any dimensions, quantities, materials, or specific requirements you're aware of."></textarea>
+        <textarea id="inquiry-message" class="form-textarea" placeholder="Describe your requirements — the more detail you can share, the better we can help. Include any dimensions, quantities, materials, or specific requirements you're aware of."></textarea>
       </div>
       <button class="form-submit" onclick="submitForm()">Send Enquiry →</button>
       <p class="form-note">We'll respond within 24 hours. Your information will never be shared with third parties.</p>
@@ -3340,10 +3340,67 @@ function filterPortfolio(cat, btn) {
 }
 
 // ── FORM SUBMIT ───────────────────────────────────────────────────────────────
-function submitForm() {
-  const n = document.getElementById('notification');
-  n.classList.add('show');
-  setTimeout(() => n.classList.remove('show'), 4000);
+async function submitForm() {
+  const btn = document.querySelector('.form-submit');
+  const notification = document.getElementById('notification');
+  
+  // Basic validation
+  const name = document.getElementById('inquiry-name').value;
+  const email = document.getElementById('inquiry-email').value;
+  const message = document.getElementById('inquiry-message').value;
+  
+  if (!name || !email || !message) {
+    notification.textContent = '⚠ Please fill in all required fields (*).';
+    notification.style.borderLeftColor = '#ff4b4b';
+    notification.classList.add('show');
+    setTimeout(() => notification.classList.remove('show'), 4000);
+    return;
+  }
+
+  // Update button state
+  const originalText = btn.textContent;
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+
+  const formData = {
+    name,
+    company: document.getElementById('inquiry-company').value,
+    email,
+    phone: document.getElementById('inquiry-phone').value,
+    service: document.getElementById('inquiry-service').value,
+    eventDate: document.getElementById('inquiry-date').value,
+    location: document.getElementById('inquiry-location').value,
+    message
+  };
+
+  try {
+    // This is a placeholder for your backend API endpoint.
+    // Replace with your actual serverless function URL (e.g., Supabase Edge Function or Vercel Function)
+    const response = await fetch('/api/send-inquiry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+
+    if (response.ok) {
+      notification.textContent = '✓ Enquiry sent! We\'ll be in touch within 24 hours.';
+      notification.style.borderLeftColor = 'var(--gold)';
+      notification.classList.add('show');
+      // Clear form
+      document.querySelectorAll('.form-input, .form-select, .form-textarea').forEach(el => el.value = '');
+    } else {
+      throw new Error('Failed to send');
+    }
+  } catch (error) {
+    console.error('Submission error:', error);
+    notification.textContent = '⚠ Something went wrong. Please try emailing us directly.';
+    notification.style.borderLeftColor = '#ff4b4b';
+    notification.classList.add('show');
+  } finally {
+    btn.textContent = originalText;
+    btn.disabled = false;
+    setTimeout(() => notification.classList.remove('show'), 4000);
+  }
 }
 
 
