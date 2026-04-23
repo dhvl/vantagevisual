@@ -43,8 +43,9 @@ class handler(BaseHTTPRequestHandler):
         """
 
         try:
+            from_email = os.getenv("FROM_EMAIL", "Vantage Visual <onboarding@resend.dev>")
             params = {
-                "from": "Vantage Visual <onboarding@resend.dev>",
+                "from": from_email,
                 "to": [contact_email],
                 "subject": subject,
                 "html": html_content,
