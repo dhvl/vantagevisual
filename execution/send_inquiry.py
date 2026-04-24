@@ -23,14 +23,23 @@ def send_inquiry_email(data):
             - message: project description
     """
     contact_email = os.getenv("CONTACT_EMAIL", "sales@vantagevisual.co.uk")
+    email_val = data.get('email', '').strip()
     
+    # Validate email format to prevent Resend 422 error
+    import re
+    is_valid_email = bool(re.match(r"[^@]+@[^@]+\.[^@]+", email_val))
+    
+    reply_to_email = email_val if is_valid_email else "do-not-reply@vantagevisual.co.uk"
+    email_note = "" if is_valid_email else "<p style='color: red; font-weight: bold;'>⚠️ WARNING: The sender provided an invalid email address. You cannot reply directly to this email. Please check their phone number or company details if provided.</p>"
+
     subject = f"New Inquiry: {data.get('service', 'General')} from {data.get('name')}"
     
     html_content = f"""
+    {email_note}
     <h2>New Event Graphics Inquiry</h2>
     <p><strong>Name:</strong> {data.get('name')}</p>
     <p><strong>Company:</strong> {data.get('company', 'N/A')}</p>
-    <p><strong>Email:</strong> {data.get('email')}</p>
+    <p><strong>Email:</strong> {email_val} {"(INVALID)" if not is_valid_email else ""}</p>
     <p><strong>Phone:</strong> {data.get('phone', 'N/A')}</p>
     <p><strong>Service:</strong> {data.get('service')}</p>
     <p><strong>Event Date:</strong> {data.get('eventDate', 'N/A')}</p>
@@ -45,7 +54,7 @@ def send_inquiry_email(data):
         "to": [contact_email],
         "subject": subject,
         "html": html_content,
-        "reply_to": data.get('email')
+        "reply_to": reply_to_email
     }
 
     try:

@@ -15,7 +15,7 @@ class handler(BaseHTTPRequestHandler):
         data = json.loads(post_data)
 
         name = data.get('name')
-        email = data.get('email')
+        email = data.get('email', '').strip()
         message = data.get('message')
         contact_email = os.getenv("CONTACT_EMAIL", "sales@vantagevisual.co.uk")
 
@@ -28,11 +28,19 @@ class handler(BaseHTTPRequestHandler):
 
         subject = f"New Inquiry: {data.get('service', 'General')} from {name}"
         
+        # Validate email format to prevent Resend 422 error
+        import re
+        is_valid_email = bool(re.match(r"[^@]+@[^@]+\.[^@]+", email))
+        
+        reply_to_email = email if is_valid_email else "do-not-reply@vantagevisual.co.uk"
+        email_note = "" if is_valid_email else "<p style='color: red; font-weight: bold;'>⚠️ WARNING: The sender provided an invalid email address. You cannot reply directly to this email. Please check their phone number or company details if provided.</p>"
+
         html_content = f"""
+        {email_note}
         <h2>New Event Graphics Inquiry</h2>
         <p><strong>Name:</strong> {name}</p>
         <p><strong>Company:</strong> {data.get('company', 'N/A')}</p>
-        <p><strong>Email:</strong> {email}</p>
+        <p><strong>Email:</strong> {email} {"(INVALID)" if not is_valid_email else ""}</p>
         <p><strong>Phone:</strong> {data.get('phone', 'N/A')}</p>
         <p><strong>Service:</strong> {data.get('service')}</p>
         <p><strong>Event Date:</strong> {data.get('eventDate', 'N/A')}</p>
@@ -49,7 +57,7 @@ class handler(BaseHTTPRequestHandler):
                 "to": [contact_email],
                 "subject": subject,
                 "html": html_content,
-                "reply_to": email
+                "reply_to": reply_to_email
             }
             resend.Emails.send(params)
             

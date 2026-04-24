@@ -3362,6 +3362,16 @@ async function submitForm() {
     return;
   }
 
+  // Email format validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    notification.textContent = '⚠ Please enter a valid email address.';
+    notification.style.borderLeftColor = '#ff4b4b';
+    notification.classList.add('show');
+    setTimeout(() => notification.classList.remove('show'), 4000);
+    return;
+  }
+
   // Update button state
   const originalText = btn.textContent;
   btn.textContent = 'Sending...';
